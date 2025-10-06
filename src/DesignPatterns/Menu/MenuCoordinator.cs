@@ -5,7 +5,7 @@ namespace DesignPatterns.Menu
     internal class MenuCoordinator
     {
         private readonly Stack<IMenu> _menuStack = new();
-        private readonly Dictionary<string, IMenu> _availableMenus = new Dictionary<string, IMenu>();
+        private readonly Dictionary<string, IMenu> _availableMenus = [];
 
         public MenuCoordinator()
         {
@@ -25,7 +25,7 @@ namespace DesignPatterns.Menu
                 currentMenu.Show();
 
                 string? userInput = Console.ReadLine();
-                var result = currentMenu.HandleInput(userInput);
+                var result = currentMenu.HandleInput(userInput!);
 
                 HandleResult(result);
             }
