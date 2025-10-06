@@ -1,6 +1,7 @@
 ﻿namespace DesignPatterns.Menu
 {
-    internal class MainMenu : IMenu
+    [MenuKey(MenuEnum.Main)]
+    public class MainMenu : IMenu
     {
         public void Show()
         {
@@ -19,21 +20,23 @@
             switch (input)
             {
                 case "1":
-                    return MenuResult.Switch;  // Coordinator will switch to BehavioralMenu
+                    return MenuResult.SwitchTo(MenuEnum.Behavioral);
                 case "2":
-                    Console.WriteLine("Creational patterns (coming soon)... Press any key.");
+                    //return MenuResult.SwitchTo(MenuEnum.Creational);
+                    Console.WriteLine("Creational menu not implemented yet. Press any key to continue.");
                     Console.ReadKey();
-                    return MenuResult.Stay;
+                    return MenuResult.Stay();
                 case "3":
-                    Console.WriteLine("Structural patterns (coming soon)... Press any key.");
+                    //return MenuResult.SwitchTo(MenuEnum.Structural);
+                    Console.WriteLine("Structural menu not implemented yet. Press any key to continue.");
                     Console.ReadKey();
-                    return MenuResult.Stay;
+                    return MenuResult.Stay();
                 case "4":
-                    return MenuResult.Exit;
+                    return MenuResult.Exit();
                 default:
-                    Console.WriteLine("Invalid choice. Press any key to try again.");
+                    Console.WriteLine("Invalid choice. Press any key.");
                     Console.ReadKey();
-                    return MenuResult.Stay;
+                    return MenuResult.Stay();
             }
         }
     }

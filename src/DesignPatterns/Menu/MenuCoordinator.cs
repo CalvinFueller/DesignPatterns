@@ -1,24 +1,40 @@
-﻿using DesignPatterns.Menu.Behavioral.Observer;
+﻿using System.Reflection;
 
 namespace DesignPatterns.Menu
 {
-    internal class MenuCoordinator
+    public class MenuCoordinator
     {
         private readonly Stack<IMenu> _menuStack = new();
-        private readonly Dictionary<string, IMenu> _availableMenus = [];
+        private readonly Dictionary<MenuEnum, IMenu> _availableMenus = [];
 
         public MenuCoordinator()
         {
-            // Register all menus here (easy to add new ones)
-            _availableMenus["main"] = new MainMenu();
-            _availableMenus["behavioral"] = new BehavioralMenu();
-            // Add more: _availableMenus["creational"] = new CreationalMenu();
+            RegisterMenus();
+            PushMenu(MenuEnum.Main);  // Start with main menu
+        }
+
+        private void RegisterMenus()
+        {
+            // Auto-discover: Scan current assembly for [MenuKey] classes implementing IMenu
+            var menuTypes = Assembly.GetExecutingAssembly()
+                .GetTypes()
+                .Where(t => t.GetInterfaces().Contains(typeof(IMenu)) &&
+                            t.GetCustomAttribute<MenuKeyAttribute>() != null)
+                .ToList();
+
+            foreach (var type in menuTypes)
+            {
+                var keyAttr = type.GetCustomAttribute<MenuKeyAttribute>();
+                if (keyAttr != null)
+                {
+                    var menu = (IMenu)Activator.CreateInstance(type)!;
+                    _availableMenus[keyAttr.Key] = menu;
+                }
+            }
         }
 
         public void Run()
         {
-            PushMenu("main");  // Start with main menu
-
             while (_menuStack.Count > 0)
             {
                 var currentMenu = _menuStack.Peek();
@@ -35,12 +51,12 @@ namespace DesignPatterns.Menu
 
         private void HandleResult(MenuResult result)
         {
-            switch (result)
+            switch (result.Type)
             {
-                case MenuResult.Stay:
+                case ResultType.Stay:
                     // Do nothing—loop will show menu again
                     break;
-                case MenuResult.Back:
+                case ResultType.Back:
                     if (_menuStack.Count > 1)
                     {
                         _menuStack.Pop();  // Pop current, reveal previous
@@ -51,16 +67,18 @@ namespace DesignPatterns.Menu
                         Console.ReadKey();
                     }
                     break;
-                case MenuResult.Switch:
-                    // For now, infer switch based on current menu; enhance with input parsing
-                    if (_menuStack.Peek() is MainMenu)
+                case ResultType.Switch:
+                    if (result.Target.HasValue)
                     {
-                        // From main, "1" switches to behavioral
-                        PushMenu("behavioral");
+                        PushMenu(result.Target.Value);
                     }
-                    // Add more logic for other switches
+                    else
+                    {
+                        Console.WriteLine("No target menu specified for switch. Press any key.");
+                        Console.ReadKey();
+                    }
                     break;
-                case MenuResult.Exit:
+                case ResultType.Exit:
                     while (_menuStack.Count > 0)
                     {
                         _menuStack.Pop();
@@ -69,11 +87,16 @@ namespace DesignPatterns.Menu
             }
         }
 
-        private void PushMenu(string menuKey)
+        private void PushMenu(MenuEnum type)
         {
-            if (_availableMenus.TryGetValue(menuKey, out var menu))
+            if (_availableMenus.TryGetValue(type, out var menu))
             {
                 _menuStack.Push(menu);
+            }
+            else
+            {
+                Console.WriteLine($"Menu '{type}' not found. Press any key.");
+                Console.ReadKey();
             }
         }
     }
