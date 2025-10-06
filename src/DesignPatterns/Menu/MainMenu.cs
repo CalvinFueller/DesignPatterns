@@ -7,11 +7,11 @@
         {
             Console.Clear();
             Console.WriteLine("=== Design Patterns Demo ===");
+            Console.WriteLine("X. Exit this Program");
             Console.WriteLine("1. Behavioral Patterns");
             Console.WriteLine("2. Creational Patterns");
             Console.WriteLine("3. Structural Patterns");
-            Console.WriteLine("4. Exit");
-            Console.WriteLine("\nEnter your choice (1-4): ");
+            Console.WriteLine("\nEnter your choice: ");
         }
 
         public MenuResult HandleInput(string input)
@@ -19,6 +19,8 @@
             input = input.ToUpper().Trim();
             switch (input)
             {
+                case "X":
+                    return MenuResult.Exit();
                 case "1":
                     return MenuResult.SwitchTo(MenuEnum.Behavioral);
                 case "2":
@@ -31,8 +33,6 @@
                     Console.WriteLine("Structural menu not implemented yet. Press any key to continue.");
                     Console.ReadKey();
                     return MenuResult.Stay();
-                case "4":
-                    return MenuResult.Exit();
                 default:
                     Console.WriteLine("Invalid choice. Press any key.");
                     Console.ReadKey();

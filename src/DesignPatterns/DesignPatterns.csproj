@@ -10,9 +10,7 @@
 	<ItemGroup>
 		<Folder Include="Menu\Creational\" />
 		<Folder Include="Menu\Structural\" />
-		<Folder Include="Patterns\Behavioral\Observer\" />
 		<Folder Include="Patterns\Creational\" />
-		<Folder Include="Patterns\" />
 		<Folder Include="Patterns\Structural\" />
 	</ItemGroup>
 
