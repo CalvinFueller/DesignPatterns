@@ -70,8 +70,8 @@
             Console.WriteLine("\nStep 4: Now let's remove an investor and see what a price change will do now. Press any key to continue.");
             Console.ReadKey();
 
-            Console.WriteLine("\n=== Interactive Mode - Remove investor & change price ===");
-            Console.WriteLine("1. Remove Investor | 2. Update Price | X. Exit");
+            Console.WriteLine("\n=== Interactive Mode - Remove investor ===");
+            Console.WriteLine("1 - 3. to remove Investor | X. Exit");
 
             while (true)
             {
@@ -84,41 +84,26 @@
                     break;
                 }
 
-                switch (choice)
+                if (int.TryParse(choice, out int num) && (num > 0 && num < 4))
                 {
-                    case "1":
-                        // Reuse your removal logic (with inner loop for input)
-                        Console.Write("\nRemove an investor (1-3): ");
-                        string? input1 = Console.ReadLine()?.Trim().ToUpper();
-                        if (input1 != "X" && int.TryParse(input1, out int idx) && idx >= 1 && idx <= 3)
-                        {
-                            stock.Unsubscribe(investors.ElementAt(idx - 1));
-                            investors.RemoveAt(idx - 1);
-                        }
-                        else if (input1 != "X")
-                        {
-                            Console.WriteLine("Invalid. Skipping.");
-                        }
-                        break;
-                    case "2":
-                        // Reuse your price logic (with inner loop for input)
-                        Console.Write("\nNew price: ");
-                        string? input2 = Console.ReadLine()?.Trim().ToUpper();
-                        if (input2 != "X" && decimal.TryParse(input2, out decimal newPrice) && newPrice != stock.Price)
-                        {
-                            stock.Price = newPrice;
-                        }
-                        else if (input2 != "X")
-                        {
-                            Console.WriteLine("Invalid or unchanged. Skipping.");
-                        }
-                        break;
-
-                    default:
-                        Console.WriteLine("Invalid choice. Try 1, 2, or X.");
-                        break;
+                    stock.Unsubscribe(investors.ElementAt(num - 1));
+                    investors.RemoveAt(num - 1);
+                    break;
+                }
+                else
+                {
+                    Console.WriteLine("Invalid. Try 1, 2, 3 or X.");
+                    continue;
                 }
             }
+
+            Console.WriteLine("\nMaking a price change now. Press any key to continue.\n");
+            Console.ReadKey();
+
+            stock.Price += 10;
+
+            Console.WriteLine("\nDemo has ended. Press any key to see the recap.");
+            Console.ReadKey();
 
             // Recap
             Console.Clear();
@@ -133,9 +118,9 @@
             Console.WriteLine("   - State change (e.g., via property setter) triggers Notify().");
             Console.WriteLine("3. Concrete Observer implements IObserver.Update().");
             Console.WriteLine("4. Usage: Create subject/observers, attach, change state → auto-notify!");
-            Console.WriteLine("\nDemo showed: Subscribe investors → Change price → Notify → Unsubscribe an investor → Change price again → Only subscribed investors notified.");
+            Console.WriteLine("\nDemo showed: Subscribe investors → Change price → Notify → Unsubscribe an investor →\nChange price again → Only subscribed investors notified.");
             Console.WriteLine("Benefits: Loose coupling, easy add/remove observers.");
-            Console.WriteLine("Press any key in order to return to the previous menu.");
+            Console.WriteLine("\nPress any key in order to return to the previous menu.");
             Console.ReadKey();
         }
     }
